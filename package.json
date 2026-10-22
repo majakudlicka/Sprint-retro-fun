@@ -1,0 +1,41 @@
+{
+  "name": "sprint-retro-fun",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build && node scripts/bundle-server.mjs",
+    "start": "node build/retro-server.js",
+    "preview": "node build/retro-server.js",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@auth/sveltekit": "^1.11.3",
+    "@sveltejs/adapter-node": "^5.5.7",
+    "@sveltejs/kit": "^2.70.3",
+    "@sveltejs/vite-plugin-svelte": "^5.1.1",
+    "drizzle-orm": "^0.45.4",
+    "postgres": "^3.4.9",
+    "svelte": "^5.57.2",
+    "typescript": "^6.0.3",
+    "vite": "^6.4.5",
+    "ws": "^8.22.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/ws": "^8.18.2",
+    "drizzle-kit": "^0.31.11",
+    "svelte-check": "^4.7.7",
+    "tsx": "^4.23.15",
+    "vitest": "^5.0.5"
+  }
+}
