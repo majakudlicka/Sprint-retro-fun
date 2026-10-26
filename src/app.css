@@ -52,7 +52,19 @@ button.ghost, button.texty { cursor: pointer; }
 button.texty { background: none; border: 0; padding: 0; font-weight: 800; text-decoration: underline; }
 button:disabled { opacity: 0.45; cursor: not-allowed; }
 .row { display: flex; gap: 0.7rem; flex-wrap: wrap; align-items: center; }
-.stack { display: grid; gap: 0.8rem; }
+.stack { display: grid; gap: 1rem; }
+form {
+	display: grid;
+	gap: 1rem;
+	width: max-content;
+	max-width: 100%;
+}
+form:has(label, textarea, select, input:not([type='hidden'])) {
+	width: 100%;
+}
+form > :is(button, .button, .row) {
+	justify-self: start;
+}
 .muted { color: var(--muted); }
 .eyebrow { text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.75rem; font-weight: 800; color: var(--coral); margin: 0; }
 .lede { font-size: 1.15rem; max-width: 42rem; }
@@ -77,7 +89,17 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 .people li, .action-list li, .invite-list li, .carry li, .order li { display: flex; justify-content: space-between; gap: 0.7rem; align-items: center; background: var(--card); border-radius: 14px; padding: 0.75rem 0.9rem; }
 .action-list li.done strong { text-decoration: line-through; color: var(--muted); }
 label { display: grid; gap: 0.3rem; font-weight: 800; }
-input, textarea, select { background: #fff; border: 1.5px solid #ddcfbb; border-radius: 12px; padding: 0.65rem 0.75rem; }
+input, textarea, select { background-color: #fff; border: 1.5px solid #ddcfbb; border-radius: 12px; padding: 0.65rem 0.75rem; }
+select {
+	appearance: none;
+	-webkit-appearance: none;
+	padding-right: 2.5rem;
+	cursor: pointer;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6.2 8 10.2 12 6.2' stroke='%23241c16' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 0.85rem center;
+	background-size: 1rem 1rem;
+}
 textarea { min-height: 5.5rem; resize: vertical; }
 .check { font-weight: 650; grid-template-columns: auto 1fr; align-items: start; }
 .formats { display: grid; gap: 0.6rem; }

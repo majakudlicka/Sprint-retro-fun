@@ -1,4 +1,5 @@
 import { error, fail, redirect } from '@sveltejs/kit';
+import { defaultRetroTitle } from '$lib/domain/dates';
 import { createRetroSchema } from '$lib/domain/schemas';
 import { HttpError } from '$lib/server/http';
 import { requireUser } from '$lib/server/session';
@@ -9,7 +10,7 @@ export const load: PageServerLoad = async (event) => {
 	const user = await requireUser(event);
 	const team = await getTeamPage(event.params.teamId, user.id);
 	if (!team) error(404, 'Not found');
-	return { teamId: team.id, teamName: team.name };
+	return { teamId: team.id, teamName: team.name, defaultTitle: defaultRetroTitle() };
 };
 
 export const actions: Actions = {

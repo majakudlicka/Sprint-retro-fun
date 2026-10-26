@@ -20,7 +20,7 @@
 	<form method="POST" class="stack">
 		<label>
 			Title
-			<input name="title" required maxlength="120" placeholder="Sprint 42" />
+			<input name="title" maxlength="120" value={data.defaultTitle} placeholder="Sprint 42" />
 		</label>
 		<fieldset>
 			<legend>Format</legend>
