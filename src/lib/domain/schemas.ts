@@ -20,7 +20,7 @@ export const createRetroSchema = z.object({
 	title: retroTitleSchema,
 	format: z.enum(FORMAT_IDS),
 	voteBudget: z.coerce.number().int().min(3).max(5),
-	anonymous: z.boolean()
+	anonymous: z.boolean().default(true)
 });
 
 const dueDate = z

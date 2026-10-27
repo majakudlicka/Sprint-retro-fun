@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { anonymousFromFormValues } from '../src/lib/domain/anonymous';
 import { CommandSchema, createRetroSchema } from '../src/lib/domain/schemas';
 import { googleSignInAllowed, cleanDisplayName } from '../src/lib/domain/signin';
 import { requestOriginAllowed } from '../src/lib/domain/origin';
@@ -49,6 +50,34 @@ describe('CommandSchema', () => {
 		expect(
 			createRetroSchema.safeParse({ title: 'Sprint', format: 'nope', voteBudget: 4, anonymous: false }).success
 		).toBe(false);
+	});
+
+	test('defaults a missing anonymous flag to true and still accepts an explicit opt-out', () => {
+		const missing = createRetroSchema.safeParse({
+			title: 'Sprint',
+			format: 'start-stop-continue',
+			voteBudget: 5
+		});
+		expect(missing.success).toBe(true);
+		if (missing.success) expect(missing.data.anonymous).toBe(true);
+
+		const optedOut = createRetroSchema.safeParse({
+			title: 'Sprint',
+			format: 'four-ls',
+			voteBudget: 4,
+			anonymous: false
+		});
+		expect(optedOut.success).toBe(true);
+		if (optedOut.success) expect(optedOut.data.anonymous).toBe(false);
+	});
+
+	test('treats a missing anonymous checkbox as anonymous without losing the unchecked opt-out', () => {
+		expect(anonymousFromFormValues([])).toBe(true);
+		expect(anonymousFromFormValues(undefined)).toBe(true);
+		expect(anonymousFromFormValues(['off'])).toBe(false);
+		expect(anonymousFromFormValues(['off', 'on'])).toBe(true);
+		expect(anonymousFromFormValues(['on'])).toBe(true);
+		expect(anonymousFromFormValues(['false'])).toBe(false);
 	});
 
 	test('fills a blank retro title with a dated default and still rejects an overlong one', () => {

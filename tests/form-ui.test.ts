@@ -14,6 +14,18 @@ test('shared form styles space fields and inset every select arrow', () => {
 	expect(selectRule).toMatch(/background-position:\s*right\s+0\.85rem\s+center/);
 });
 
+test('new retros start anonymous and an unchecked box still opts out', () => {
+	const page = readFileSync('src/routes/teams/[teamId]/retros/new/+page.svelte', 'utf8');
+	expect(page).toContain('value="off"');
+	expect(page).toContain('name="anonymous"');
+	expect(page).toContain('bind:checked={anonymous}');
+	expect(page).toContain('form?.anonymous !== false');
+	const server = readFileSync('src/routes/teams/[teamId]/retros/new/+page.server.ts', 'utf8');
+	expect(server).toContain('anonymousFromFormValues');
+	expect(server).toContain("form.getAll('anonymous')");
+	expect(server).not.toContain("form.get('anonymous') === 'on'");
+});
+
 test('the new retro title is prefilled and can be submitted blank', () => {
 	const page = readFileSync('src/routes/teams/[teamId]/retros/new/+page.svelte', 'utf8');
 	const input = page.match(/<input\b[^>]*\bname="title"[^>]*>/)?.[0] ?? '';
