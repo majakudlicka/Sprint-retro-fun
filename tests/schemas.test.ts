@@ -6,7 +6,7 @@ import { googleSignInAllowed, cleanDisplayName } from '../src/lib/domain/signin'
 import { requestOriginAllowed } from '../src/lib/domain/origin';
 import { consumeRate } from '../src/lib/domain/rate-limit';
 import { nextPhase } from '../src/lib/domain/phases';
-import { isRealDate } from '../src/lib/domain/dates';
+import { defaultRetroTitle, isRealDate, submittedRetroTitle } from '../src/lib/domain/dates';
 import { PHASES } from '../src/lib/domain/types';
 
 const cardId = '33333333-3333-4333-8333-333333333333';
@@ -49,6 +49,60 @@ describe('CommandSchema', () => {
 		expect(
 			createRetroSchema.safeParse({ title: 'Sprint', format: 'nope', voteBudget: 4, anonymous: false }).success
 		).toBe(false);
+	});
+
+	test('fills a blank retro title with a dated default and still rejects an overlong one', () => {
+		const today = new Date(2026, 9, 26);
+		expect(defaultRetroTitle(today)).toBe('Retro on 26 Oct 2026');
+		expect(defaultRetroTitle(new Date(2026, 0, 5))).toBe('Retro on 5 Jan 2026');
+		expect(submittedRetroTitle('   ', today)).toBe('Retro on 26 Oct 2026');
+		expect(submittedRetroTitle(null, today)).toBe('Retro on 26 Oct 2026');
+		expect(submittedRetroTitle('  Sprint 42  ', today)).toBe('Sprint 42');
+		expect(submittedRetroTitle(121, today)).toBe(121);
+
+		const blank = createRetroSchema.safeParse({
+			title: '',
+			format: 'start-stop-continue',
+			voteBudget: '5',
+			anonymous: false
+		});
+		expect(blank.success).toBe(true);
+		if (blank.success) expect(blank.data.title).toBe(defaultRetroTitle());
+
+		const missing = createRetroSchema.safeParse({
+			title: null,
+			format: 'start-stop-continue',
+			voteBudget: 5,
+			anonymous: true
+		});
+		expect(missing.success).toBe(true);
+		if (missing.success) expect(missing.data.title).toBe(defaultRetroTitle());
+
+		const named = createRetroSchema.safeParse({
+			title: '  Sprint 42  ',
+			format: 'four-ls',
+			voteBudget: 3,
+			anonymous: false
+		});
+		expect(named.success).toBe(true);
+		if (named.success) expect(named.data.title).toBe('Sprint 42');
+
+		expect(
+			createRetroSchema.safeParse({
+				title: 'x'.repeat(121),
+				format: 'four-ls',
+				voteBudget: 5,
+				anonymous: false
+			}).success
+		).toBe(false);
+		expect(
+			createRetroSchema.safeParse({
+				title: 'x'.repeat(120),
+				format: 'four-ls',
+				voteBudget: 5,
+				anonymous: false
+			}).success
+		).toBe(true);
 	});
 });
 

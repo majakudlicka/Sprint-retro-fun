@@ -1,11 +1,14 @@
 import { z } from 'zod';
-import { isRealDate } from './dates';
+import { isRealDate, submittedRetroTitle } from './dates';
 import { FORMAT_IDS } from './types';
 
 const id = z.uuid();
 
 export const teamNameSchema = z.string().trim().min(1).max(80);
-export const retroTitleSchema = z.string().trim().min(1).max(120);
+export const retroTitleSchema = z.preprocess(
+	(value) => submittedRetroTitle(value),
+	z.string().min(1).max(120)
+);
 export const emailSchema = z
 	.string()
 	.trim()
