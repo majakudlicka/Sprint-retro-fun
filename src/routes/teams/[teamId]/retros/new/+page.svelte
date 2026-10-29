@@ -1,9 +1,13 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { FORMATS } from '$lib/domain/formats';
 	import { FORMAT_IDS } from '$lib/domain/types';
 	import type { ActionData, PageData } from './$types';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
+
+	// Checked unless this render is a failed submit where the facilitator opted out.
+	let anonymous = $state(untrack(() => form?.anonymous !== false));
 </script>
 
 <svelte:head>
@@ -46,7 +50,8 @@
 			</select>
 		</label>
 		<label class="check">
-			<input type="checkbox" name="anonymous" />
+			<input type="hidden" name="anonymous" value="off" />
+			<input type="checkbox" name="anonymous" value="on" bind:checked={anonymous} />
 			Anonymous notes. Authors are stored, but other people never see who wrote what.
 		</label>
 		<button class="button" type="submit">Open the board</button>
